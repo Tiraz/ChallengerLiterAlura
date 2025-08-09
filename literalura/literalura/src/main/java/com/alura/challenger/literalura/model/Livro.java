@@ -1,33 +1,37 @@
 package com.alura.challenger.literalura.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//@Entity
-//@Table(name = "livros")
+@Entity
+@Table(name = "livros")
 public class Livro {
 
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String titulo;
 
+    @ManyToOne
     private Autor autor;
 
     private Long dowloadsNum;
 
+    @ElementCollection
+    @CollectionTable(name = "livro_idiomas", joinColumns = @JoinColumn(name = "livro_id"))
+    @Column(name = "idioma")
     private List<String> idiomas;
 
 
     public Livro() {
     }
 
-    public Livro(DadosGutenDex dados, int index) {
+    public Livro(DadosGutenDex dados, int index, Autor autor) {
         this.titulo = dados.livro().get(index).titlo();
-        this.autor = new Autor(dados.livro().get(index).autor().get(0));
+        this.autor = autor;
         this.dowloadsNum = dados.livro().get(index).numeroDawloads();
         this.idiomas = new ArrayList<>(dados.livro().get(index).idioma());
     }

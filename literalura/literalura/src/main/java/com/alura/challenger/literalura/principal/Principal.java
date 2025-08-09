@@ -1,8 +1,11 @@
 package com.alura.challenger.literalura.principal;
 
+import com.alura.challenger.literalura.model.Autor;
 import com.alura.challenger.literalura.model.DadosGutenDex;
 import com.alura.challenger.literalura.model.Livro;
 import com.alura.challenger.literalura.model.LivroGutenDex;
+import com.alura.challenger.literalura.repositorio.AutorRepository;
+import com.alura.challenger.literalura.repositorio.LivroRepository;
 import com.alura.challenger.literalura.service.ConsumirAPI;
 import com.alura.challenger.literalura.service.ConverteDados;
 
@@ -18,6 +21,21 @@ public class Principal {
 
     Scanner scanner = new Scanner(System.in);
 
+    private AutorRepository repositorio;
+    private LivroRepository livroRepositorio;
+
+    public Principal() {
+    }
+
+    public Principal(AutorRepository repositorio) {
+        this.repositorio = repositorio;
+    }
+
+    public Principal(AutorRepository repositorio, LivroRepository livroRepositorio) {
+        this.repositorio = repositorio;
+        this.livroRepositorio = livroRepositorio;
+    }
+
     public void exibirMenu() {
 
         var escolha = -1;
@@ -25,11 +43,11 @@ public class Principal {
 
             System.out.println("""
                     -----------Litera-Alura----------
-                    1- Buscar livro por nome
-                    2-
-                    3-
-                    4-
-                    5-
+                    1- Buscar livro por título
+                    2- Listar livros registrados
+                    3- Listar auttores registrados
+                    4- Listar autores vivos em um determinado ano
+                    5- listar livros em um determinado idioma
                     
                     0- Sair
                     """);
@@ -74,14 +92,15 @@ public class Principal {
 
         DadosGutenDex dados = converteDados.obterDados(json, DadosGutenDex.class);
 
-        List<Livro> livros = new ArrayList<>();
+        Autor autor = new Autor(dados.livro().get(0).autor().get(0));
+        repositorio.save(autor);
 
-        for (int i = 0; i <dados.livro().size() ; i++) {
-            Livro livro = new Livro(dados, i);
-            livros.add(livro);
-        }
+        Livro livro = new Livro(dados, 0, autor);
+        livroRepositorio.save(livro);
 
-        livros.forEach(System.out::println);
+        System.out.println(autor);
+        System.out.println();
+        System.out.println(livro);
 
 
     }
