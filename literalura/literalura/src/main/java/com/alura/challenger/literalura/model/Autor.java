@@ -20,7 +20,7 @@ public class Autor {
 
     private Integer anoMorte;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Livro> livros;
 
 
@@ -75,10 +75,18 @@ public class Autor {
 
     @Override
     public String toString() {
+
+        String livrosStr = livros == null ? "Nenhum" :
+                livros.stream()
+                        .map(Livro::getTitulo) // pega o título de cada livro
+                        .reduce((a, b) -> a + ", " + b) // junta os títulos separados por vírgula
+                        .orElse("Nenhum");
+
         return "--Autor--\n" +
                 "Nome: " + nome + "\n" +
                 "Ano nascimento: " + aniversario + "\n" +
-                "Ano morte: " + anoMorte + "\n";
+                "Ano morte: " + (anoMorte == null ? "Ainda vivo" : anoMorte) + "\n" +
+                "Livros: " + livrosStr + "\n";
 
     }
 }

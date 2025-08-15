@@ -20,10 +20,10 @@ public class Livro {
 
     private Long dowloadsNum;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "livro_idiomas", joinColumns = @JoinColumn(name = "livro_id"))
     @Column(name = "idioma")
-    private List<String> idiomas;
+    private List<String> idiomas = new ArrayList<>();;
 
 
     public Livro() {
@@ -79,9 +79,14 @@ public class Livro {
 
     @Override
     public String toString() {
+        var nomeAutor = "Não encontrado";
+        if (autor != null) {
+            nomeAutor = autor.getNome();
+        }
+
         return "****Livro***\n" +
                 "Título: " + titulo +"\n" +
-                "Autor: " + autor.getNome() +"\n" +
+                "Autor: " + nomeAutor +"\n" +
                 "Número de dowloads: " + dowloadsNum +"\n" +
                 "Idiomas: " + idiomas +"\n";
     }
